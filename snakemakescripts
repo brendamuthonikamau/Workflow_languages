@@ -1,0 +1,54 @@
+
+##Downloading data used in the tutorial
+wget https://bitbucket.org/snakemake/snakemake/downloads/snakemake-tutorial-data.tar.gz
+
+##unzipping the data 
+tar -xf snakemake-tutorial-data.tar.gz
+
+## creating a conda environment
+conda create -n snakemake-tutorial python
+##activating the environment
+conda activate snakemake-tutorial
+##downgrading python version istalled to be compatible with snakemake
+conda search python
+conda install python= 3.6.7
+##installing snakemake
+conda install -c bioconda snakemake 
+##checking snakemake version installed
+snakemake --version
+##installing tools required
+conda install -c bioconda bcftools
+conda install -c bioconda bwa
+conda install -c bioconda graphviz
+conda install -c bioconda samtools
+conda install -c bioconda pyyaml
+##snakemake dryrun
+snakemake -np
+##running snakemake
+snakemake
+snakemake --cores 1
+snakemake --jobs 1
+snakemake -j2
+## running more the second rule
+snakemake --cores 1 second_rule
+##specifying the target output file when using a generalized code
+snakemake -np mapped_reads/B.bam
+##specifying multiple outputs
+snakemake -np mapped_reads/A.bam mapped_reads/B.bam
+##alternative way of passing multiple outputs/targets
+snakemake -np mapped_reads/{A,B}.bam
+##You can update the file modification date of the input file (not necessary)
+touch data/samples/A.fastq
+
+##sorting read alignments
+snakemake -np sorted_reads/B.bam
+
+###Step 4: Indexing read alignments and visualizing the DAG of jobs
+#rule samtools_index:
+  #  input:
+   #     "sorted_reads/{sample}.bam"
+    #output:
+     #   "sorted_reads/{sample}.bam.bai"
+   # shell:
+    #    "samtools index {input}"
+firefox dag.svg
